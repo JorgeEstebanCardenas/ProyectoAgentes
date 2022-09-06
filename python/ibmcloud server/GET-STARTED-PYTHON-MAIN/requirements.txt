@@ -1,3 +1,6 @@
 Flask>=1.0.0
 cloudant==2.13.0
 numpy==1.23.1
+pandas==1.4.3
+networkx==2.8.5
+pygame==2.1.2

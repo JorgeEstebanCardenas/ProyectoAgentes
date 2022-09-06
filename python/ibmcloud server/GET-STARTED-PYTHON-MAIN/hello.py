@@ -4,6 +4,7 @@ import atexit
 import os
 import json
 from search import dijkstra_search
+from calles import main_simulation
 
 app = Flask(__name__, static_url_path='')
 
@@ -57,12 +58,25 @@ def get_visitor():
         print('No database')
         return jsonify([])
     
-@app.route('/api/matrix', methods=['GET'])
+@app.route('/api/singleSearch', methods=['GET'])
 def get_matrix():
     A = request.args.get('A')
     B = request.args.get('B')
     path = dijkstra_search(int(A), int(B))
     return path
+
+@app.route('/api/animation/staticProcess', methods=['GET'])
+def process_animation():
+    anim_data = main_simulation()
+    
+    return anim_data
+
+@app.route('/api/animation/download', methods=['GET'])
+def get_animation():
+    animation = open('anim.json')
+    data = json.load(animation)
+    
+    return data
 
 # /**
 #  * Endpoint to get a JSON array of all the visitors in the database
