@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, jsonify
 import atexit
 import os
 import json
-from search import matrix_search
+from search import dijkstra_search
 
 app = Flask(__name__, static_url_path='')
 
@@ -61,8 +61,8 @@ def get_visitor():
 def get_matrix():
     A = request.args.get('A')
     B = request.args.get('B')
-    lastTraining = matrix_search(int(A), int(B))
-    return lastTraining
+    path = dijkstra_search(int(A), int(B))
+    return path
 
 # /**
 #  * Endpoint to get a JSON array of all the visitors in the database
