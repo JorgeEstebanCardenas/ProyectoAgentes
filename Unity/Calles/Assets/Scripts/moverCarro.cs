@@ -11,9 +11,6 @@ public class moverCarro : MonoBehaviour
 {
     public float speed = 1;
 
-
-    private Ciudad ciudad = new Ciudad();
-
     private Vector2 start;
 
     private Vector2 end;
@@ -22,8 +19,7 @@ public class moverCarro : MonoBehaviour
 
     void Start()
     {
-        start = ciudad.calle1.start;
-        end = ciudad.calle1.end;
+        
 
         transform.position = start;
 
@@ -35,7 +31,6 @@ public class moverCarro : MonoBehaviour
 
         direction.Normalize();
 
-        Debug.Log(ciudad);
     }
 
     // Update is called once per frame
