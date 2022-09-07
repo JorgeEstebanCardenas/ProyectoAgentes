@@ -1,5 +1,14 @@
-sim.create_car(
-#    (
-#        [0,1,2,3,4,5,6]
-#    )
-# )
+puntos[0] = (0*escala,0*escala)
+# puntos[1] = (45*escala,0*escala)
+# puntos[2] = (90*escala,0*escala)
+# puntos[3] = (0*escala,45*escala)
+# puntos[4] = (45*escala,45*escala)
+# puntos[5] = (90*escala,45*escala)
+# # puntos[6] = (12*escala,90*escala)
+# puntos[6] = (0*escala,90*escala)
+# puntos[7] = (45*escala,90*escala)
+# puntos[8] = (90*escala,90*escala)
+# puntos[9] = (45*escala,-30*escala)
+# puntos[10] = (45*escala,120*escala)
+# puntos[11] = (120*escala,45*escala)
+# puntos[12] = (-30*escala,45*escala)

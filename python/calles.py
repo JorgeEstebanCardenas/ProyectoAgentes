@@ -274,7 +274,7 @@ class Window:
     def draw_carro(self):
         for carro in self.sim.carros:
 
-            roadindex = carro.road
+            roadindex = carro.path[carro.road]
 
             longitud = self.sim.roads[roadindex].length
 
@@ -311,14 +311,13 @@ class Window:
 
             if carro.pos >= longitud:
                 self.sim.roads[roadindex].car_exit(carro)
-
                 carro.road  += 1
 
 
                 if carro.road > len(carro.path)-1:
                     carro.road = 0
     
-                self.sim.roads[carro.road].car_enter(carro)
+                self.sim.roads[carro.path[carro.road]].car_enter(carro)
                 carro.pos = 0
                 carro.vel = carro.vel * 0.8
             
@@ -461,7 +460,6 @@ class Simulation:
                 "type": 1
             })
             self.idcounter += 1
-
         road = Road(start, end, sem, ciclo)
         self.roads.append(road)
 
@@ -497,7 +495,7 @@ class Carro:
         
         self.path = path
         
-        self.road = path[0]
+        self.road = 0
 
         self.step_size = 0.5
 
@@ -590,71 +588,97 @@ sim = Simulation()
 
 #puntos
 escala = 2
-p0 = (0*escala,0*escala)
-p1 = (45*escala,0*escala)
-p2 = (90*escala,0*escala)
-p3 = (0*escala,45*escala)
-p4 = (45*escala,45*escala)
-p5 = (90*escala,45*escala)
-# p6 = (12*escala,90*escala)
-p6 = (0*escala,90*escala)
-p7 = (45*escala,90*escala)
-p8 = (90*escala,90*escala)
-pN = (45*escala,-30*escala)
-pS = (45*escala,120*escala)
-pE = (120*escala,45*escala)
-pO = (-30*escala,45*escala)
-
-# Add multiple roads
-# sim.create_roads([
-#     (p0,p1),
-#     (p1,p2),
-#     (p2,p3),
-#     (p4,p3),
-#     (p2,p5),
-#     (p6,p5),
-#     (p6,p0),
-#     (p4,p5),
-#     (p3,p5),
-#     (p1,p4),
-#     (p1,p3),
-#     (p2,p3),
-#     (p6,p2),
-#     (p6,p4),
-#     (p4,p1),
-#     (p0,p6),
-#     (p7,p8),
-#     (p8,p5),
-#     (p6,p7),
-#     (p4,p7),
-#     (p5,p6),
-#     (p5,p3),
-#     (p5,p8),
-#     #polares
-#     (p0,pN),
-#     (pN,p2),
-#     (p2,pE),
-#     (pE,p8),
-#     (p8,pS),
-#     (pS,p6),
-#     (p6,pO),
-#     (pO,p0)
-# ])
-
-sim.create_roads([
-    (p0,p1),
-    (p1,p4),
-    (p4,p3),
-    (p3,p0),
-])
 
 
-# ruta = crearRutas(3,9)
+puntos = [
+    (0*escala,0*escala),
+    (45*escala,0*escala),
+    (90*escala,0*escala),
+    (0*escala,45*escala),
+    (45*escala,45*escala),
+    (90*escala,45*escala),
+    (0*escala,90*escala),
+    (45*escala,90*escala),
+    (90*escala,90*escala),
+    (45*escala,-30*escala),
+    (45*escala,120*escala),
+    (120*escala,45*escala),
+    (-30*escala,45*escala),
+]
 
+calles = [
+    (puntos[0],puntos[1]),
+    (puntos[0],puntos[3]),
+    (puntos[0],puntos[4]),
+    (puntos[0],puntos[9]),
+    (puntos[0],puntos[12]),
+    (puntos[1],puntos[0]),
+    (puntos[1],puntos[2]),
+    (puntos[1],puntos[3]),
+    (puntos[1],puntos[4]),
+    (puntos[1],puntos[5]),
+    (puntos[1],puntos[9]),
+    (puntos[2],puntos[1]),
+    (puntos[2],puntos[4]),
+    (puntos[2],puntos[5]),
+    (puntos[2],puntos[9]),
+    (puntos[2],puntos[11]),
+    (puntos[3],puntos[0]),
+    (puntos[3],puntos[4]),
+    (puntos[3],puntos[6]),
+    (puntos[4],puntos[0]),
+    (puntos[4],puntos[1]),
+    (puntos[4],puntos[2]),
+    (puntos[4],puntos[3]),
+    (puntos[4],puntos[5]),
+    (puntos[4],puntos[6]),
+    (puntos[4],puntos[7]),
+    (puntos[4],puntos[8]),
+    (puntos[5],puntos[2]),
+    (puntos[5],puntos[4]),
+    (puntos[5],puntos[8]),
+    (puntos[6],puntos[3]),
+    (puntos[6],puntos[4]),
+    (puntos[6],puntos[7]),
+    (puntos[6],puntos[10]),
+    (puntos[6],puntos[12]),
+    (puntos[7],puntos[3]),
+    (puntos[7],puntos[4]),
+    (puntos[7],puntos[5]),
+    (puntos[7],puntos[6]),
+    (puntos[7],puntos[8]),
+    (puntos[7],puntos[10]),
+    (puntos[8],puntos[4]),
+    (puntos[8],puntos[5]),
+    (puntos[8],puntos[7]),
+    (puntos[8],puntos[11]),
+    (puntos[8],puntos[10]),
+    (puntos[9],puntos[0]),
+    (puntos[9],puntos[1]),
+    (puntos[9],puntos[2]),
+    (puntos[10],puntos[6]),
+    (puntos[10],puntos[7]),
+    (puntos[10],puntos[8]),
+    (puntos[11],puntos[2]),
+    (puntos[11],puntos[8]),
+    (puntos[12],puntos[0]),
+    (puntos[12],puntos[6]),
+]
+
+
+sim.create_roads(calles)
+
+
+ruta = crearRutas(9,8,calles,puntos)
+
+
+
+
+print(ruta)
 
 sim.create_car(
    (
-       [0,1,2,3]
+       ruta
    )
 )
 
