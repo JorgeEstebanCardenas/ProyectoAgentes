@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 
 def crearRutas(start,end):
 
-    rutas = pd.read_csv("csv/grafo.csv")
+    rutas = pd.read_csv("csv\OliverRutasV2.csv")
     DG=nx.DiGraph()
 
     for i in range(17):

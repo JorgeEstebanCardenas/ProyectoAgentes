@@ -448,10 +448,10 @@ def main_simulation():
     sim.create_roads(lista_caminos)
 
     sim.create_cars(
-    (
-        dijkstra_search(0, 7), # [0,1,2,3,4,5,6,7],
-        dijkstra_search(1, 0) # [1,2,3,4,5,6,7,0]
-    )
+        (
+            dijkstra_search(0, 7),
+            dijkstra_search(1, 0)
+        )
     )
 
     # Start simulation

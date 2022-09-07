@@ -3,6 +3,8 @@ from pygame import gfxdraw
 import numpy as np
 import json
 
+from rutasProyecto import crearRutas
+
 
 class Window:
     def __init__(self, sim, config={}):
@@ -586,61 +588,73 @@ class Road:
   
 sim = Simulation()
 
+#puntos
+escala = 2
+p0 = (0*escala,0*escala)
+p1 = (45*escala,0*escala)
+p2 = (90*escala,0*escala)
+p3 = (0*escala,45*escala)
+p4 = (45*escala,45*escala)
+p5 = (90*escala,45*escala)
+# p6 = (12*escala,90*escala)
+p6 = (0*escala,90*escala)
+p7 = (45*escala,90*escala)
+p8 = (90*escala,90*escala)
+pN = (45*escala,-30*escala)
+pS = (45*escala,120*escala)
+pE = (120*escala,45*escala)
+pO = (-30*escala,45*escala)
+
 # Add multiple roads
+# sim.create_roads([
+#     (p0,p1),
+#     (p1,p2),
+#     (p2,p3),
+#     (p4,p3),
+#     (p2,p5),
+#     (p6,p5),
+#     (p6,p0),
+#     (p4,p5),
+#     (p3,p5),
+#     (p1,p4),
+#     (p1,p3),
+#     (p2,p3),
+#     (p6,p2),
+#     (p6,p4),
+#     (p4,p1),
+#     (p0,p6),
+#     (p7,p8),
+#     (p8,p5),
+#     (p6,p7),
+#     (p4,p7),
+#     (p5,p6),
+#     (p5,p3),
+#     (p5,p8),
+#     #polares
+#     (p0,pN),
+#     (pN,p2),
+#     (p2,pE),
+#     (pE,p8),
+#     (p8,pS),
+#     (pS,p6),
+#     (p6,pO),
+#     (pO,p0)
+# ])
 
-""" sim.create_roads([
-    ((250,90),(200,90)),#Calle 2 horizontal
-    ((200, 90), (150, 90)),
-    ((150,90),(100,90)),
-    ((100,90),(90,90)),
-    ((90,90),(60,90)),
-    
-    ((150, 20),(150, 90)),#Calle 4 vertical
+sim.create_roads([
+    (p0,p1),
+    (p1,p4),
+    (p4,p3),
+    (p3,p0),
+])
 
-    ((200,20),(200,90)),#Calle 5 vertical
-    ((200,90),(200,120)),
-    ((200,120),(200,150)),
 
-    ((200,120),(100,120)),#Calle 3 horizontal
+# ruta = crearRutas(3,9)
 
-    ((100,120),(100,90)),#Calle 3 vertical
-    ((100,150),(100,120)),
 
-    ((90,90),(90,20)),#Calle 2 vertical
-
-    ((60,20),(90,20)),#Calle 1 horizontal
-    ((90,20),(150,20)),
-    ((150,20),(200,20)),
-    ((200,20),(250,20)),
-
-    ((60,90),(60,20)),#Calle 1 vertical
-    ((60,90),(60,150)),
-
-    ((60,150),(100,150)),#Calle 5 horizontal
-    ((100,150),(200,150)),
-    ((200,150),(250,150)),
-
-    ((250,150),(250,90)),#Calle 5 vertical
-    ((250,20),(250,90))
-]) """
-
-lista_caminos = [
-    ((50,50),(50,150)),
-    ((50,150),(150,150),(True),0),
-    ((150,150),(150,50),(True),1),
-    ((150,50),(150,-50),(True),0),
-    ((150,-50),(250,-50),(True),1),
-    ((250,-50),(250,50)),
-    ((250,50),(150,50),(True),0),
-    ((150,50),(50,50)),
-]
-
-sim.create_roads(lista_caminos)
-
-sim.create_cars(
+sim.create_car(
    (
-       [0,1,2,3,4,5,6,7],
-       [1,2,3,4,5,6,7,0]
+       [0,1,2,3]
    )
 )
 

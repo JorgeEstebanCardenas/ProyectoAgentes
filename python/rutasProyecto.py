@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 
 def crearRutas(start,end):
-    rutas = pd.read_csv("csv\precionProyecto.csv")
+    rutas = pd.read_csv("csv\OliverRutasV2.csv")
 
     DG=nx.DiGraph()
     for row in rutas.iterrows():
@@ -13,8 +13,5 @@ def crearRutas(start,end):
                     row[1]["Destino"],
                     duration=row[1]["Costo"])
 
-
-
     path = list(nx.dijkstra_path(DG, source=start, target=end, weight="Costo"))
-
     return path

@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import networkx as nx
 
-archivo = "OliverRutas.csv"
+archivo = "OliverRutasV2.csv"
 
 def dijkstra_search(start, end):
     rutas = pd.read_csv(archivo)
