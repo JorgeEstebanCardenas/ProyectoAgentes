@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 import pygame
 from pygame import gfxdraw
 import numpy as np
@@ -220,7 +221,7 @@ class Window:
                 color
             )
 
-    def draw_semaforos(self, screen, frame_count):
+    def draw_semaforos(self, frame_count):
 
         for road in self.sim.roads:
 
@@ -249,24 +250,25 @@ class Window:
                 color = road.semaforo.colores[road.semaforo.estado_actual]
                 self.rotated_box(
                     pos, 
-                    (4, 5), 
+                    (4, 5),  
                     cos=road.angle_cos,
                     sin=road.angle_sin,
                     color=color, 
                     filled=True
                 )
 
-
+                
                 agent = {
                     "Stepinfo": {
-                        "agentId": road.semaforo.id,
+                        "agentId": road.sem_id,
                         "stepIndex": self.step,
                         "time":self.sim.t,
-                        "state": road.semaforo.estado_actual, #(0 if carro.vel == 0 else 1),
+                        "state": road.semaforo.estado_actual,
                         "positionX": pos[0],
                         "positionY": pos[1],
                     }
                 }
+                print(agent)
                 
                 self.sim.anim["steps"].append(agent)
 
@@ -305,13 +307,15 @@ class Window:
                 delta_v = carro.vel - leader.vel
 
                 if delta_x == 0:
-                    delta_x = 1
+                    delta_x = self.sim.roads[roadindex].car_position(carro)-1
 
 
                 alpha = (s0 + max(0, T*carro.vel + delta_v*carro.vel/ab)) / delta_x
 
 
             # carro.acc = carro.acc_max * (1 - (4/carro.vel_max)**2 - alpha**2)
+            if carro.vel_max <= 0:
+                carro.vel_max = 0.001
 
             if carro.parar == True:
                 carro.acc = -b_max * carro.vel/carro.vel_max
@@ -319,11 +323,12 @@ class Window:
                 carro.acc = carro.acc_max * (1 - (carro.vel/carro.vel_max)**4 - alpha**2)
 
 
+
             if self.sim.roads[roadindex].sem:
                 if self.sim.roads[roadindex].semaforo.estado_actual == "rojo" and carro.pos >= 2*longitud/3 and carro.pos <= longitud - 5:
                     # carro.vel = 0
                     carro.parar = True
-                elif self.sim.roads[roadindex].semaforo.estado_actual == "amarillo" and carro.pos >= longitud/3:
+                elif self.sim.roads[roadindex].semaforo.estado_actual == "amarillo" and carro.pos >= longitud/3 and carro.pos <= longitud - 5:
                     carro.vel_max = carro.vel
 
                     # carro.pos = carro.pos + carro.vel * carro.step_size + (carro.acc * carro.step_size ** 2)/2
@@ -363,7 +368,7 @@ class Window:
             self.sim.anim["steps"].append(agent)
 
 
-    def draw_roads(self, screen):
+    def draw_roads(self):
         for road in self.sim.roads:
             # Draw road background
             self.rotated_box(
@@ -374,9 +379,6 @@ class Window:
                 color=(180, 180, 220),
                 centered=False
             )
-
-            
-
 
             # Draw road lines
             # self.rotated_box(
@@ -419,7 +421,7 @@ class Window:
         self.draw_grid(100, (200,200,200))
         self.draw_axes()
 
-        self.draw_roads(self.screen)
+        self.draw_roads()
         #self.draw_vehicles()
         #self.draw_signals()
 
@@ -428,7 +430,7 @@ class Window:
 
         self.draw_carro()
         
-        self.draw_semaforos(self.screen, self.sim.frame_count)
+        self.draw_semaforos(self.sim.frame_count)
 
 
 
@@ -483,12 +485,14 @@ class Simulation:
         
         if sem:
             road = Road(start,end,sem,ciclo,self.idcounter)
+
+            # print(road.semaforo.id)
             self.anim["agents"].append({
                 "id": self.idcounter,
                 "type": 1
             })
             self.idcounter += 1
-        road = Road(start, end, sem, ciclo)
+        road = Road(start, end, sem, ciclo, self.idcounter)
         self.roads.append(road)
 
         return road
@@ -497,8 +501,7 @@ class Simulation:
         for road in road_list:
             self.create_road(*road)
     
-    def create_semaforos(self, semaforo_list):
-        pass
+
 
 
     def update(self):
@@ -584,7 +587,7 @@ class semaforo: # ===================== El id del semaforo de guarda como 0 en J
         self.estado_actual = self.estados[self.ciclo][self.index]
 
 class Road:
-    def __init__(self, start, end,sem, ciclo, jsonId=0):
+    def __init__(self, start, end,sem, ciclo, jsonId):
         self.start = start
         
         self.end = end
@@ -594,6 +597,8 @@ class Road:
         self.vehicles = []
 
         self.ciclo = ciclo
+
+        self.sem_id = jsonId
 
         self.init_properties()
 
@@ -605,8 +610,6 @@ class Road:
         self.angle_sin = (self.end[1]-self.start[1]) / self.length
         self.angle_cos = (self.end[0]-self.start[0]) / self.length
 
-    def create_semaforo(self, semaforo):
-        self.semaforo = semaforo
 
     def car_enter(self,car):
         self.vehicles.append(car)
@@ -715,6 +718,7 @@ ruta2 = crearRutas(1,8,calles,puntos)
 
 sim.create_cars(
    (
+       ruta2,
        ruta2,
        ruta2
    )
