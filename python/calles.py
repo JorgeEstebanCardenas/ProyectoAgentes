@@ -5,7 +5,6 @@ import json
 
 from rutasProyecto import crearRutas
 
-
 class Window:
     def __init__(self, sim, config={}):
         # Simulation to draw
@@ -32,6 +31,7 @@ class Window:
         self.mouse_down = False
         
         self.step = 0
+        self.rojo = False
 
 
     def loop(self, loop=None):
@@ -287,26 +287,56 @@ class Window:
             self.rotated_box((x, y), (l, h), cos=cos, sin=sin, centered=True)
 
             alpha = 0
+            b_max = 1
+            s0 = 4
+            T = 1
+            ab = 2 * (carro.acc_max - b_max) ** 0.5
 
-            if self.sim.roads[roadindex].car_position(carro) > 0:
-                pass
-            
-            carro.acc = carro.acc_max * (1 - (4/carro.vel_max)**2 - alpha**2)
+            if carro.vel + carro.acc * carro.step_size < 0:
+                carro.pos = carro.pos - 0.5 * carro.vel * carro.vel/carro.acc
+                carro.vel = 0
+            else:
+                carro.vel = carro.vel + carro.acc * carro.step_size
+                carro.pos = carro.pos + carro.vel * carro.step_size + carro.acc * carro.step_size**2 / 2
 
-            carro.vel = carro.vel + carro.acc * carro.step_size
+            if self.sim.roads[roadindex].car_position(carro) > 1:
+                leader = self.sim.roads[roadindex].get_leader()
+
+                delta_x = leader.pos - carro.pos
+                delta_v = carro.vel - leader.vel
+
+                if delta_x == 0:
+                    delta_x = 1
+
+
+                alpha = (s0 + max(0, T*carro.vel + delta_v*carro.vel/ab)) / delta_x
+
+                print(carro.acc)
+
+            # carro.acc = carro.acc_max * (1 - (4/carro.vel_max)**2 - alpha**2)
+
+            if self.rojo == True:
+                carro.acc = -b_max * carro.vel/carro.vel_max
+            else:
+                carro.acc = carro.acc_max * (1 - (carro.vel/carro.vel_max)**4 - alpha**2)
+
 
             if self.sim.roads[roadindex].sem:
-                if self.sim.roads[roadindex].semaforo.estado_actual == "rojo" and carro.pos >= longitud - 12 * self.sim.roads[roadindex].car_position(carro):
-                    carro.vel = 0
-                elif self.sim.roads[roadindex].semaforo.estado_actual == "amarillo" and carro.pos >= longitud/2:
-                    carro.vel_max = 3.4
-                    carro.pos = carro.pos + carro.vel * carro.step_size + (carro.acc * carro.step_size ** 2)/2
+                if self.sim.roads[roadindex].semaforo.estado_actual == "rojo" and carro.pos >= longitud - 54 * self.sim.roads[roadindex].car_position(carro):
+                    # carro.vel = 0
+                    self.rojo = True
+                elif self.sim.roads[roadindex].semaforo.estado_actual == "amarillo" and carro.pos >= longitud-54:
+                    carro.vel_max = carro.vel
+
+                    # carro.pos = carro.pos + carro.vel * carro.step_size + (carro.acc * carro.step_size ** 2)/2
                 else:
+                    self.rojo = False
                     carro.vel_max = 4.25
-                    carro.pos = carro.pos + carro.vel * carro.step_size + (carro.acc * carro.step_size ** 2)/2
-            else:
-                carro.vel_max = 4.25
-                carro.pos = carro.pos + carro.vel * carro.step_size + (carro.acc * carro.step_size ** 2)/2
+                    # carro.vel_max = 4.25
+                    # carro.pos = carro.pos + carro.vel * carro.step_size + (carro.acc * carro.step_size ** 2)/2
+            # else:
+                # carro.vel_max = 4.25
+                # carro.pos = carro.pos + carro.vel * carro.step_size + (carro.acc * carro.step_size ** 2)/2
 
 
             if carro.pos >= longitud:
@@ -468,6 +498,10 @@ class Simulation:
     def create_roads(self, road_list):
         for road in road_list:
             self.create_road(*road)
+    
+    def create_semaforos(self, semaforo_list):
+        pass
+
 
     def update(self):
         # Update every road
@@ -571,11 +605,17 @@ class Road:
         self.angle_sin = (self.end[1]-self.start[1]) / self.length
         self.angle_cos = (self.end[0]-self.start[0]) / self.length
 
+    def create_semaforo(self, semaforo):
+        self.semaforo = semaforo
+
     def car_enter(self,car):
         self.vehicles.append(car)
         
     def car_exit(self,car):
         self.vehicles.remove(car)
+
+    def get_leader(self):
+        return self.vehicles[0]
 
     def car_position(self,car):
         return (self.vehicles.index(car) + 1)
@@ -615,7 +655,7 @@ calles = [
     (puntos[1],puntos[0]),
     (puntos[1],puntos[2]),
     (puntos[1],puntos[3]),
-    (puntos[1],puntos[4]),
+    (puntos[1],puntos[4],(True), (0)),
     (puntos[1],puntos[5]),
     (puntos[1],puntos[9]),
     (puntos[2],puntos[1]),
@@ -624,7 +664,7 @@ calles = [
     (puntos[2],puntos[9]),
     (puntos[2],puntos[11]),
     (puntos[3],puntos[0]),
-    (puntos[3],puntos[4]),
+    (puntos[3],puntos[4],(True),(1)),
     (puntos[3],puntos[6]),
     (puntos[4],puntos[0]),
     (puntos[4],puntos[1]),
@@ -635,7 +675,7 @@ calles = [
     (puntos[4],puntos[7]),
     (puntos[4],puntos[8]),
     (puntos[5],puntos[2]),
-    (puntos[5],puntos[4]),
+    (puntos[5],puntos[4],(True),(0)),
     (puntos[5],puntos[8]),
     (puntos[6],puntos[3]),
     (puntos[6],puntos[4]),
@@ -643,7 +683,7 @@ calles = [
     (puntos[6],puntos[10]),
     (puntos[6],puntos[12]),
     (puntos[7],puntos[3]),
-    (puntos[7],puntos[4]),
+    (puntos[7],puntos[4],(True),(1)),
     (puntos[7],puntos[5]),
     (puntos[7],puntos[6]),
     (puntos[7],puntos[8]),
@@ -669,16 +709,13 @@ calles = [
 sim.create_roads(calles)
 
 
-ruta = crearRutas(9,8,calles,puntos)
+# ruta = crearRutas(9,8,calles,puntos)
+ruta2 = crearRutas(1,7,calles,puntos)
 
-
-
-
-print(ruta)
-
-sim.create_car(
+sim.create_cars(
    (
-       ruta
+       ruta2,
+       ruta2
    )
 )
 

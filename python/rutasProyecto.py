@@ -23,8 +23,16 @@ def crearRutas(start,end,calles,puntos):
 
     for i in range(0,len(path)-1):
         calle = (puntos[path[i]],puntos[path[i+1]])
-        index = calles.index(calle)
-        print(index, calle)
+        # print(calle)
+        try:
+            index = calles.index(calle)
+        except ValueError:
+            try:
+                index = calles.index((puntos[path[i]],puntos[path[i+1]], (True), (0)))
+            except ValueError:
+                index = calles.index((puntos[path[i]],puntos[path[i+1]], (True), (1)))
+            
+            
         ruta.append(index)
 
     return ruta
