@@ -31,7 +31,6 @@ class Window:
         self.mouse_down = False
         
         self.step = 0
-        self.rojo = False
 
 
     def loop(self, loop=None):
@@ -311,26 +310,25 @@ class Window:
 
                 alpha = (s0 + max(0, T*carro.vel + delta_v*carro.vel/ab)) / delta_x
 
-                print(carro.acc)
 
             # carro.acc = carro.acc_max * (1 - (4/carro.vel_max)**2 - alpha**2)
 
-            if self.rojo == True:
+            if carro.parar == True:
                 carro.acc = -b_max * carro.vel/carro.vel_max
             else:
                 carro.acc = carro.acc_max * (1 - (carro.vel/carro.vel_max)**4 - alpha**2)
 
 
             if self.sim.roads[roadindex].sem:
-                if self.sim.roads[roadindex].semaforo.estado_actual == "rojo" and carro.pos >= longitud - 54 * self.sim.roads[roadindex].car_position(carro):
+                if self.sim.roads[roadindex].semaforo.estado_actual == "rojo" and carro.pos >= 2*longitud/3 and carro.pos <= longitud - 5:
                     # carro.vel = 0
-                    self.rojo = True
-                elif self.sim.roads[roadindex].semaforo.estado_actual == "amarillo" and carro.pos >= longitud-54:
+                    carro.parar = True
+                elif self.sim.roads[roadindex].semaforo.estado_actual == "amarillo" and carro.pos >= longitud/3:
                     carro.vel_max = carro.vel
 
                     # carro.pos = carro.pos + carro.vel * carro.step_size + (carro.acc * carro.step_size ** 2)/2
                 else:
-                    self.rojo = False
+                    carro.parar = False
                     carro.vel_max = 4.25
                     # carro.vel_max = 4.25
                     # carro.pos = carro.pos + carro.vel * carro.step_size + (carro.acc * carro.step_size ** 2)/2
@@ -541,6 +539,8 @@ class Carro:
 
         self.acc = 0
 
+        self.parar = False
+
         self.state = {
             "verde":(0,255,0),
             "amarillo":(255,255,0),
@@ -710,7 +710,8 @@ sim.create_roads(calles)
 
 
 # ruta = crearRutas(9,8,calles,puntos)
-ruta2 = crearRutas(1,7,calles,puntos)
+ruta2 = crearRutas(1,8,calles,puntos)
+
 
 sim.create_cars(
    (
