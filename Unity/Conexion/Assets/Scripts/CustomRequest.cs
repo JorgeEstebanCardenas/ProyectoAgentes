@@ -12,11 +12,6 @@ public class CustomRequest : MonoBehaviour
     void Start()
     {
         StartCoroutine(GetRequest(uri));
-
-        //string jsonString = jsonFile.text;
-        //SimulationInfo simulationInfo = JsonUtility.FromJson<SimulationInfo>(jsonString);
-        //spawnManager.SpawnAgents(simulationInfo);
-        //Debug.Log("Agents Legnth: " + simulationInfo.agents.Length);
     }
 
     IEnumerator GetRequest(string uri)
@@ -39,15 +34,7 @@ public class CustomRequest : MonoBehaviour
                     Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
                     break;
                 case UnityWebRequest.Result.Success:
-                    // Simple JSON parse.
-                    //Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
-                    //string jsonString = webRequest.downloadHandler.text;
-                    //PostInfo postInfo = JsonUtility.FromJson<PostInfo>(jsonString);
-                    //Debug.Log("X Position: " + postInfo.XPosition);
-
-                    // Convert json to object and spawn all agents.
                     string jsonString = webRequest.downloadHandler.text;
-                    //Debug.Log(jsonString);
                     SimulationInfo simulationInfo = JsonUtility.FromJson<SimulationInfo>(jsonString);
                     spawnManager.SpawnAgents(simulationInfo);
                     break;
