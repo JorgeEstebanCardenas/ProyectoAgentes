@@ -1,0 +1,84 @@
+{
+  "agents": [
+    {
+      "agentId": 0,
+      "type": 0// Vehicle
+    },
+    {
+      "agentId": 1,
+      "type": 0// Vehicle
+    },
+    {
+      "agentId": 2,
+      "type": 1// Traffic Light
+    }
+  ],
+  "steps": [
+    {
+      "StepInfo": {
+        "agentId": 0,// Vehicle.
+        "stepIndex": 0,// Integer number of sequence order.
+        "time": 0,// Elapsed time.
+        "state": 1,// For example 0: Stoped, 1: Moving.
+        "positionX": 0,
+        "positionY": 0,
+        "positionZ": 0
+      }
+    },
+    {
+      "StepInfo": {
+        "agentId": 1,// Vehicle.
+        "stepIndex": 0,
+        "time": 0,// Elapsed time.
+        "state": 1,
+        "positionX": 2,
+        "positionY": 0,
+        "positionZ": 0
+      }
+    },
+    {
+      "StepInfo": {
+        "agentId": 2,// Traffic Light
+        "stepIndex": 0,
+        "time": 0,// Elapsed time.
+        "state": 1,// For example 0: Red, 1: Yellow, 2: Green.
+        "positionX": 2,
+        "positionY": 0,
+        "positionZ": 5
+      }
+    }
+    {
+      "StepInfo": {
+        "agentId": 0,// Vehicle.
+        "stepIndex": 1,
+        "time": 100,// Elapsed time ms.
+        "state": 1,
+        "positionX": -10,
+        "positionY": 0,
+        "positionZ": 5
+      }
+    },
+    {
+      "StepInfo": {
+        "agentId": 1,// Vehicle.
+        "stepIndex": 1,
+        "time": 100,// Elapsed time ms.
+        "state": 1,
+        "positionX": 2,
+        "positionY": 0,
+        "positionZ": 5
+      }
+    },
+    {
+      "StepInfo": {
+        "agentId": 2,// Traffic Light
+        "stepIndex": 1,
+        "time": 100,// Elapsed time ms.
+        "state": 1,
+        "positionX": 2,
+        "positionY": 0,
+        "positionZ": 5
+      }
+    }
+  ]
+}
