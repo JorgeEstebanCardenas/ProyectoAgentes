@@ -287,7 +287,7 @@ class Window:
 
             self.rotated_box((x, y), (l, h), cos=cos, sin=sin, centered=True)
 
-            alpha = 0
+            alpha = 0.5
             b_max = 1
             s0 = 4
             T = 1
@@ -301,9 +301,9 @@ class Window:
                 carro.pos = carro.pos + carro.vel * carro.step_size + carro.acc * carro.step_size**2 / 2
 
             if self.sim.roads[roadindex].car_position(carro) > 1:
-                leader = self.sim.roads[roadindex].get_leader()
+                leader = self.sim.roads[roadindex].get_leader(self.sim.roads[roadindex].car_position(carro) - 1)
 
-                delta_x = leader.pos - carro.pos
+                delta_x = leader.pos - carro.pos - l
                 delta_v = carro.vel - leader.vel
 
                 if delta_x == 0:
@@ -318,23 +318,25 @@ class Window:
                 carro.vel_max = 0.001
 
             if carro.parar == True:
-                carro.acc = -b_max * carro.vel/carro.vel_max
+            #    carro.acc = -b_max * carro.vel/carro.vel_max
+                carro.acc = 0
+                carro.vel = 0
             else:
                 carro.acc = carro.acc_max * (1 - (carro.vel/carro.vel_max)**4 - alpha**2)
 
 
 
             if self.sim.roads[roadindex].sem:
-                if self.sim.roads[roadindex].semaforo.estado_actual == "rojo" and carro.pos >= 2*longitud/3 and carro.pos <= longitud - 5:
+                if self.sim.roads[roadindex].semaforo.estado_actual == "rojo" and carro.pos >= 13*longitud/17 and carro.pos <= longitud - 5:
                     # carro.vel = 0
                     carro.parar = True
-                elif self.sim.roads[roadindex].semaforo.estado_actual == "amarillo" and carro.pos >= longitud/3 and carro.pos <= longitud - 5:
-                    carro.vel_max = carro.vel
+                elif self.sim.roads[roadindex].semaforo.estado_actual == "amarillo" and carro.pos >= 2*longitud/3 and carro.pos <= longitud - 5:
+                    carro.vel_max = carro.vel * 0.85
 
                     # carro.pos = carro.pos + carro.vel * carro.step_size + (carro.acc * carro.step_size ** 2)/2
                 else:
                     carro.parar = False
-                    carro.vel_max = 4.25
+                    carro.vel_max = carro.vel_max_CONST
                     # carro.vel_max = 4.25
                     # carro.pos = carro.pos + carro.vel * carro.step_size + (carro.acc * carro.step_size ** 2)/2
             # else:
@@ -533,10 +535,14 @@ class Carro:
         self.road = 0
 
         self.step_size = 0.5
+        
+        self.acc_max_CONST = 1.4
 
-        self.acc_max = 1.4
+        self.acc_max = self.acc_max_CONST
+        
+        self.vel_max_CONST = 4.25
 
-        self.vel_max = 4.25
+        self.vel_max = self.vel_max_CONST
 
         self.vel = 0
 
@@ -617,8 +623,11 @@ class Road:
     def car_exit(self,car):
         self.vehicles.remove(car)
 
-    def get_leader(self):
-        return self.vehicles[0]
+    def get_leader(self, position):
+        if position == 0:
+            return self.vehicles[0]
+        else:
+            return self.vehicles[position-1]
 
     def car_position(self,car):
         return (self.vehicles.index(car) + 1)
@@ -718,6 +727,7 @@ ruta2 = crearRutas(1,8,calles,puntos)
 
 sim.create_cars(
    (
+       ruta2,
        ruta2,
        ruta2,
        ruta2
