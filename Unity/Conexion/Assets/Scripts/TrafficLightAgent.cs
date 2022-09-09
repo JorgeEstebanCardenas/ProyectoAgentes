@@ -23,7 +23,7 @@ public class TrafficLightAgent : AgentComponent
         if(steps == null) { return; }
         dt += Time.deltaTime;
         Step currentStep = steps[index];
-        if (currentStep.StepInfo.time < dt)
+        if (currentStep.Stepinfo.time < dt)
         {
             index++;
             if (index > steps.Length - 1)
@@ -31,7 +31,12 @@ public class TrafficLightAgent : AgentComponent
                 index = steps.Length - 1;
                 enabled = false;
             }
-            ChangeLight(currentStep.StepInfo.state);
+            if(currentStep.Stepinfo.state == "verde")
+                ChangeLight(2);
+            if (currentStep.Stepinfo.state == "amarillo")
+                ChangeLight(1);
+            if (currentStep.Stepinfo.state == "rojo")
+                ChangeLight(0);
         }
     }
 

@@ -14,7 +14,7 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
-  m_Fog: 1
+  m_Fog: 0
   m_FogColor: {r: 0.65080994, g: 0.666729, b: 0.7075472, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.05
@@ -342,8 +342,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1687258581}
-  m_LocalRotation: {x: 0.112335496, y: 0.25198036, z: -0.02946186, w: 0.9607386}
-  m_LocalPosition: {x: 8.023093, y: 3.1437101, z: -6.511206}
+  m_LocalRotation: {x: 0.69856745, y: -0.0021466466, z: 0.002095744, w: 0.71553797}
+  m_LocalPosition: {x: -0.5191257, y: 23.979576, z: 1.0528543}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -406,14 +406,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1725315117}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: -1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1821306936
 GameObject:
   m_ObjectHideFlags: 0
@@ -443,7 +443,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f2289ec6dd68ca4f830f1bc2e427e7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uri: http://localhost:8000/simulation-one-agent.json
+  uri: https://a00232280-agentes.us-south.cf.appdomain.cloud/api/animation/download
   jsonFile: {fileID: 4900000, guid: 3cf05de66fefe5149aa103efa24b7073, type: 3}
   spawnManager: {fileID: 203116806}
 --- !u!4 &1821306938

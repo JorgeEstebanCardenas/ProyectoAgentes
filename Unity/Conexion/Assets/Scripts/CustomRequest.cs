@@ -46,6 +46,7 @@ public class CustomRequest : MonoBehaviour
 
                     // Convert json to object and spawn all agents.
                     string jsonString = webRequest.downloadHandler.text;
+                    //Debug.Log(jsonString);
                     SimulationInfo simulationInfo = JsonUtility.FromJson<SimulationInfo>(jsonString);
                     spawnManager.SpawnAgents(simulationInfo);
                     break;
@@ -71,14 +72,14 @@ public class SimulationInfo
 [Serializable]
 public class Agent
 {
-    public int agentId;
+    public int id;
     public int type;
 }
 
 [Serializable]
 public class Step
 {
-    public StepInfo StepInfo;
+    public StepInfo Stepinfo;
 }
 
 [Serializable]
@@ -87,8 +88,8 @@ public class StepInfo
     public int agentId;
     public int stepIndex;
     public float time;
-    public int state;
+    public string state;
     public float positionX;
     public float positionY;
-    public float positionZ;
+    //public float positionZ;
 }

@@ -29,7 +29,7 @@ public class SpawnManager : MonoBehaviour
                 default:
                     break;
             }
-            agentComponent.agentId = agent.agentId;
+            agentComponent.agentId = agent.id;
             agentComponent.type = agent.type;
         }
     }
@@ -38,12 +38,12 @@ public class SpawnManager : MonoBehaviour
     {
         int randomInt = UnityEngine.Random.Range(0, agentsPrefabs.Length);
         agentComponent = Instantiate(agentsPrefabs[randomInt], pivot, false);
-        agentComponent.name = agentsPrefabs[randomInt].name + " ID: " + agent.agentId;
+        agentComponent.name = agentsPrefabs[randomInt].name + " ID: " + agent.id;
         MoveController moveController = Instantiate(moveControllerPrefab, pivot, false);
-        moveController.name = "Move Controller ID " + agent.agentId;
+        moveController.name = "Move Controller ID " + agent.id;
         agentComponent.GetComponent<CarAgent>().target = moveController.transform;
-        moveController.steps = GetSteps(agent.agentId);
-        Vector3 position = new Vector3(moveController.steps[0].StepInfo.positionX, 0, moveController.steps[0].StepInfo.positionY);
+        moveController.steps = GetSteps(agent.id);
+        Vector3 position = new Vector3(moveController.steps[0].Stepinfo.positionX, 0, moveController.steps[0].Stepinfo.positionY);
         agentComponent.transform.localPosition = position;
         moveController.enabled = true;
     }
@@ -51,9 +51,9 @@ public class SpawnManager : MonoBehaviour
     void BuildTrafficLight(ref AgentComponent agentComponent, Agent agent)
     {
         agentComponent = Instantiate(trafficLightPrefab, pivot, false);
-        agentComponent.name = "Traffic Light ID: " + agent.agentId;
-        var steps = GetSteps(agent.agentId);
-        Vector3 position = new Vector3(steps[0].StepInfo.positionX, 0, steps[0].StepInfo.positionY);
+        agentComponent.name = "Traffic Light ID: " + agent.id;
+        var steps = GetSteps(agent.id);
+        Vector3 position = new Vector3(steps[0].Stepinfo.positionX, 0, steps[0].Stepinfo.positionY);
         agentComponent.transform.localPosition = position;
         agentComponent.GetComponent<TrafficLightAgent>().steps = steps;
     }
@@ -61,7 +61,7 @@ public class SpawnManager : MonoBehaviour
     Step[] GetSteps(int id)
     {
         var steps = from step in simulationInfo.steps
-                    where step.StepInfo.agentId == id
+                    where step.Stepinfo.agentId == id
                     select step;
         return steps.ToArray();
     }

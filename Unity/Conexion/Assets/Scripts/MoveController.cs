@@ -12,9 +12,10 @@ public class MoveController : MonoBehaviour
     {
         dt += Time.deltaTime;
         Step currentStep = steps[index];
-        if(currentStep.StepInfo.time < dt)
+        if(currentStep.Stepinfo.time < dt)
         {
             index++;
+            //Debug.Log(index);
             if(index > steps.Length - 1)
             {
                 index = steps.Length - 1;
@@ -23,7 +24,7 @@ public class MoveController : MonoBehaviour
             return;
         }
 
-        Vector3 postion = new Vector3(currentStep.StepInfo.positionX, 0, currentStep.StepInfo.positionY);
+        Vector3 postion = new Vector3(currentStep.Stepinfo.positionX, 0, currentStep.Stepinfo.positionY);
         transform.localPosition = postion;// Tiene que ser local position para que sea afectado por el GameObject Pivot.
     }
 }

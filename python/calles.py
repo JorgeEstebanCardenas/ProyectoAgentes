@@ -366,7 +366,7 @@ class Window:
                     "positionY": y,
                 }
             }
-            
+            print(agent)
             self.sim.anim["steps"].append(agent)
 
 
@@ -727,10 +727,12 @@ ruta2 = crearRutas(1,8,calles,puntos)
 
 sim.create_cars(
    (
-       ruta2,
-       ruta2,
-       ruta2,
-       ruta2
+       crearRutas(1,8,calles,puntos),
+        crearRutas(1,8,calles,puntos),
+        #crearRutas(3,12,calles,puntos),
+        #crearRutas(9,1,calles,puntos),
+        #crearRutas(10,0,calles,puntos),
+        #crearRutas(5,11,calles,puntos)
    )
 )
 
