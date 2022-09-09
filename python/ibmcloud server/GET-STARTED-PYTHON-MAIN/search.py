@@ -4,7 +4,7 @@ import networkx as nx
 
 archivo = "OliverRutasV2.csv"
 
-def dijkstra_search(start, end, calles, puntos):
+def crearRutas(start, end, calles, puntos):
     rutas = pd.read_csv(archivo)
     
     DG = nx.DiGraph()

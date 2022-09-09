@@ -1,10 +1,9 @@
-from asyncio.windows_events import NULL
 import pygame
 from pygame import gfxdraw
 import numpy as np
 import json
 
-from rutasProyecto import crearRutas
+from search import crearRutas
 
 class Window:
     def __init__(self, sim, config={}):
@@ -640,108 +639,110 @@ class Road:
     def update(self, dt):           
         n = len(self.vehicles)
   
-  
-sim = Simulation()
+def main_simulation():
+    sim = Simulation()
 
-#puntos
-escala = 2
-
-
-puntos = [
-    (0*escala,0*escala),
-    (45*escala,0*escala),
-    (90*escala,0*escala),
-    (0*escala,45*escala),
-    (45*escala,45*escala),
-    (90*escala,45*escala),
-    (0*escala,90*escala),
-    (45*escala,90*escala),
-    (90*escala,90*escala),
-    (45*escala,-30*escala),
-    (45*escala,120*escala),
-    (120*escala,45*escala),
-    (-30*escala,45*escala),
-]
-
-calles = [
-    (puntos[0],puntos[1]),
-    (puntos[0],puntos[3]),
-    (puntos[0],puntos[4]),
-    (puntos[0],puntos[9]),
-    (puntos[0],puntos[12]),
-    (puntos[1],puntos[0]),
-    (puntos[1],puntos[2]),
-    (puntos[1],puntos[3]),
-    (puntos[1],puntos[4],(True), (0)),
-    (puntos[1],puntos[5]),
-    (puntos[1],puntos[9]),
-    (puntos[2],puntos[1]),
-    (puntos[2],puntos[4]),
-    (puntos[2],puntos[5]),
-    (puntos[2],puntos[9]),
-    (puntos[2],puntos[11]),
-    (puntos[3],puntos[0]),
-    (puntos[3],puntos[4],(True),(1)),
-    (puntos[3],puntos[6]),
-    (puntos[4],puntos[0]),
-    (puntos[4],puntos[1]),
-    (puntos[4],puntos[2]),
-    (puntos[4],puntos[3]),
-    (puntos[4],puntos[5]),
-    (puntos[4],puntos[6]),
-    (puntos[4],puntos[7]),
-    (puntos[4],puntos[8]),
-    (puntos[5],puntos[2]),
-    (puntos[5],puntos[4],(True),(0)),
-    (puntos[5],puntos[8]),
-    (puntos[6],puntos[3]),
-    (puntos[6],puntos[4]),
-    (puntos[6],puntos[7]),
-    (puntos[6],puntos[10]),
-    (puntos[6],puntos[12]),
-    (puntos[7],puntos[3]),
-    (puntos[7],puntos[4],(True),(1)),
-    (puntos[7],puntos[5]),
-    (puntos[7],puntos[6]),
-    (puntos[7],puntos[8]),
-    (puntos[7],puntos[10]),
-    (puntos[8],puntos[4]),
-    (puntos[8],puntos[5]),
-    (puntos[8],puntos[7]),
-    (puntos[8],puntos[11]),
-    (puntos[8],puntos[10]),
-    (puntos[9],puntos[0]),
-    (puntos[9],puntos[1]),
-    (puntos[9],puntos[2]),
-    (puntos[10],puntos[6]),
-    (puntos[10],puntos[7]),
-    (puntos[10],puntos[8]),
-    (puntos[11],puntos[2]),
-    (puntos[11],puntos[8]),
-    (puntos[12],puntos[0]),
-    (puntos[12],puntos[6]),
-]
+    #puntos
+    escala = 2
 
 
-sim.create_roads(calles)
+    puntos = [
+        (0*escala,0*escala),
+        (45*escala,0*escala),
+        (90*escala,0*escala),
+        (0*escala,45*escala),
+        (45*escala,45*escala),
+        (90*escala,45*escala),
+        (0*escala,90*escala),
+        (45*escala,90*escala),
+        (90*escala,90*escala),
+        (45*escala,-30*escala),
+        (45*escala,120*escala),
+        (120*escala,45*escala),
+        (-30*escala,45*escala),
+    ]
+
+    calles = [
+        (puntos[0],puntos[1]),
+        (puntos[0],puntos[3]),
+        (puntos[0],puntos[4]),
+        (puntos[0],puntos[9]),
+        (puntos[0],puntos[12]),
+        (puntos[1],puntos[0]),
+        (puntos[1],puntos[2]),
+        (puntos[1],puntos[3]),
+        (puntos[1],puntos[4],(True), (0)),
+        (puntos[1],puntos[5]),
+        (puntos[1],puntos[9]),
+        (puntos[2],puntos[1]),
+        (puntos[2],puntos[4]),
+        (puntos[2],puntos[5]),
+        (puntos[2],puntos[9]),
+        (puntos[2],puntos[11]),
+        (puntos[3],puntos[0]),
+        (puntos[3],puntos[4],(True),(1)),
+        (puntos[3],puntos[6]),
+        (puntos[4],puntos[0]),
+        (puntos[4],puntos[1]),
+        (puntos[4],puntos[2]),
+        (puntos[4],puntos[3]),
+        (puntos[4],puntos[5]),
+        (puntos[4],puntos[6]),
+        (puntos[4],puntos[7]),
+        (puntos[4],puntos[8]),
+        (puntos[5],puntos[2]),
+        (puntos[5],puntos[4],(True),(0)),
+        (puntos[5],puntos[8]),
+        (puntos[6],puntos[3]),
+        (puntos[6],puntos[4]),
+        (puntos[6],puntos[7]),
+        (puntos[6],puntos[10]),
+        (puntos[6],puntos[12]),
+        (puntos[7],puntos[3]),
+        (puntos[7],puntos[4],(True),(1)),
+        (puntos[7],puntos[5]),
+        (puntos[7],puntos[6]),
+        (puntos[7],puntos[8]),
+        (puntos[7],puntos[10]),
+        (puntos[8],puntos[4]),
+        (puntos[8],puntos[5]),
+        (puntos[8],puntos[7]),
+        (puntos[8],puntos[11]),
+        (puntos[8],puntos[10]),
+        (puntos[9],puntos[0]),
+        (puntos[9],puntos[1]),
+        (puntos[9],puntos[2]),
+        (puntos[10],puntos[6]),
+        (puntos[10],puntos[7]),
+        (puntos[10],puntos[8]),
+        (puntos[11],puntos[2]),
+        (puntos[11],puntos[8]),
+        (puntos[12],puntos[0]),
+        (puntos[12],puntos[6]),
+    ]
 
 
-# ruta = crearRutas(9,8,calles,puntos)
-# ruta2 = crearRutas(1,8,calles,puntos)
+    sim.create_roads(calles)
 
 
-sim.create_cars(
-   (
-       crearRutas(1,8,calles,puntos),
+    # ruta = crearRutas(9,8,calles,puntos)
+    # ruta2 = crearRutas(1,8,calles,puntos)
+
+
+    sim.create_cars(
+    (
         crearRutas(1,8,calles,puntos),
-        crearRutas(3,12,calles,puntos),
-        crearRutas(9,1,calles,puntos),
-        crearRutas(10,0,calles,puntos),
-        crearRutas(5,11,calles,puntos)
-   )
-)
+            crearRutas(1,8,calles,puntos),
+            crearRutas(3,12,calles,puntos),
+            crearRutas(9,1,calles,puntos),
+            crearRutas(10,0,calles,puntos),
+            crearRutas(5,11,calles,puntos)
+    )
+    )
 
-# Start simulation
-win = Window(sim)
-win.offset = (-150, -90)
-win.run(steps_per_update=5)
+    # Start simulation
+    win = Window(sim)
+    win.offset = (-150, -90)
+    win.run(steps_per_update=5)
+    
+    return sim.anim
