@@ -53,7 +53,7 @@ public class SpawnManager : MonoBehaviour
         agentComponent = Instantiate(trafficLightPrefab, pivot, false);
         agentComponent.name = "Traffic Light ID: " + agent.id;
         var steps = GetSteps(agent.id);
-        Vector3 position = new Vector3(steps[0].Stepinfo.positionX, 0, steps[0].Stepinfo.positionY);
+        Vector3 position = new Vector3(steps[0].Stepinfo.positionX, 10, steps[0].Stepinfo.positionY);
         agentComponent.transform.localPosition = position;
         agentComponent.GetComponent<TrafficLightAgent>().steps = steps;
     }
