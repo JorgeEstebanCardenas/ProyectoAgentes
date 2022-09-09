@@ -11,11 +11,11 @@ public class CustomRequest : MonoBehaviour
 
     void Start()
     {
-        //StartCoroutine(GetRequest(uri));
+        StartCoroutine(GetRequest(uri));
 
-        string jsonString = jsonFile.text;
-        SimulationInfo simulationInfo = JsonUtility.FromJson<SimulationInfo>(jsonString);
-        spawnManager.SpawnAgents(simulationInfo);
+        //string jsonString = jsonFile.text;
+        //SimulationInfo simulationInfo = JsonUtility.FromJson<SimulationInfo>(jsonString);
+        //spawnManager.SpawnAgents(simulationInfo);
         //Debug.Log("Agents Legnth: " + simulationInfo.agents.Length);
     }
 
