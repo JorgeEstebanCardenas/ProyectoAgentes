@@ -106,73 +106,101 @@ class Window:
                 else:
                     pos = road.end
 
-
-
                 if frame_count % 500 == 0:
                     road.semaforo.cambiar_estado()
-
-                color = road.semaforo.colores[road.semaforo.estado_actual]
-
-
+                
                 agent = {
                     "Stepinfo": {
-                        "agentId": road.semaforo.id,
+                        "agentId": road.sem_id,
                         "stepIndex": self.step,
                         "time":self.sim.t,
-                        "state": road.semaforo.estado_actual, #(0 if carro.vel == 0 else 1),
+                        "state": road.semaforo.estado_actual,
                         "positionX": pos[0],
                         "positionY": pos[1],
                     }
                 }
+                print(agent)
                 
                 self.sim.anim["steps"].append(agent)
 
     def draw_carro(self):
         for carro in self.sim.carros:
 
-            roadindex = carro.road
+            roadindex = carro.path[carro.road]
 
             longitud = self.sim.roads[roadindex].length
 
             sin, cos = self.sim.roads[roadindex].angle_sin, self.sim.roads[roadindex].angle_cos
-            h=2
             l=4
             x = self.sim.roads[roadindex].start[0] + cos * carro.pos
             y = self.sim.roads[roadindex].start[1] + sin * carro.pos 
 
-            alpha = 0
+            alpha = 0.5
+            b_max = 1
+            s0 = 4
+            T = 1
+            ab = 2 * (carro.acc_max - b_max) ** 0.5
 
-            if self.sim.roads[roadindex].car_position(carro) > 0:
-                pass
-            
-            carro.acc = carro.acc_max * (1 - (4/carro.vel_max)**2 - alpha**2)
+            if carro.vel + carro.acc * carro.step_size < 0:
+                carro.pos = carro.pos - 0.5 * carro.vel * carro.vel/carro.acc
+                carro.vel = 0
+            else:
+                carro.vel = carro.vel + carro.acc * carro.step_size
+                carro.pos = carro.pos + carro.vel * carro.step_size + carro.acc * carro.step_size**2 / 2
 
-            carro.vel = carro.vel + carro.acc * carro.step_size
+            if self.sim.roads[roadindex].car_position(carro) > 1:
+                leader = self.sim.roads[roadindex].get_leader(self.sim.roads[roadindex].car_position(carro) - 1)
+
+                delta_x = leader.pos - carro.pos - l
+                delta_v = carro.vel - leader.vel
+
+                if delta_x == 0:
+                    delta_x = self.sim.roads[roadindex].car_position(carro)-1
+
+
+                alpha = (s0 + max(0, T*carro.vel + delta_v*carro.vel/ab)) / delta_x
+
+
+            # carro.acc = carro.acc_max * (1 - (4/carro.vel_max)**2 - alpha**2)
+            if carro.vel_max <= 0:
+                carro.vel_max = 0.001
+
+            if carro.parar == True:
+            #    carro.acc = -b_max * carro.vel/carro.vel_max
+                carro.acc = 0
+                carro.vel = 0
+            else:
+                carro.acc = carro.acc_max * (1 - (carro.vel/carro.vel_max)**4 - alpha**2)
+
+
 
             if self.sim.roads[roadindex].sem:
-                if self.sim.roads[roadindex].semaforo.estado_actual == "rojo" and carro.pos >= longitud - 12 * self.sim.roads[roadindex].car_position(carro):
-                    carro.vel = 0
-                elif self.sim.roads[roadindex].semaforo.estado_actual == "amarillo" and carro.pos >= longitud/2:
-                    carro.vel_max = 3.4
-                    carro.pos = carro.pos + carro.vel * carro.step_size + (carro.acc * carro.step_size ** 2)/2
+                if self.sim.roads[roadindex].semaforo.estado_actual == "rojo" and carro.pos >= 13*longitud/17 and carro.pos <= longitud - 5:
+                    # carro.vel = 0
+                    carro.parar = True
+                elif self.sim.roads[roadindex].semaforo.estado_actual == "amarillo" and carro.pos >= 2*longitud/3 and carro.pos <= longitud - 5:
+                    carro.vel_max = carro.vel * 0.85
+
+                    # carro.pos = carro.pos + carro.vel * carro.step_size + (carro.acc * carro.step_size ** 2)/2
                 else:
-                    carro.vel_max = 4.25
-                    carro.pos = carro.pos + carro.vel * carro.step_size + (carro.acc * carro.step_size ** 2)/2
-            else:
-                carro.vel_max = 4.25
-                carro.pos = carro.pos + carro.vel * carro.step_size + (carro.acc * carro.step_size ** 2)/2
+                    carro.parar = False
+                    carro.vel_max = carro.vel_max_CONST
+                    # carro.vel_max = 4.25
+                    # carro.pos = carro.pos + carro.vel * carro.step_size + (carro.acc * carro.step_size ** 2)/2
+            # else:
+                # carro.vel_max = 4.25
+                # carro.pos = carro.pos + carro.vel * carro.step_size + (carro.acc * carro.step_size ** 2)/2
 
 
             if carro.pos >= longitud:
                 self.sim.roads[roadindex].car_exit(carro)
-
                 carro.road  += 1
 
 
                 if carro.road > len(carro.path)-1:
                     carro.road = 0
     
-                self.sim.roads[carro.road].car_enter(carro)
+                self.sim.roads[carro.path[carro.road]].car_enter(carro)
                 carro.pos = 0
                 carro.vel = carro.vel * 0.8
             
@@ -261,13 +289,14 @@ class Simulation:
         
         if sem:
             road = Road(start,end,sem,ciclo,self.idcounter)
+
+            # print(road.semaforo.id)
             self.anim["agents"].append({
                 "id": self.idcounter,
                 "type": 1
             })
             self.idcounter += 1
-
-        road = Road(start, end, sem, ciclo)
+        road = Road(start, end, sem, ciclo, self.idcounter)
         self.roads.append(road)
 
         return road
@@ -302,17 +331,23 @@ class Carro:
         
         self.path = path
         
-        self.road = path[0]
+        self.road = 0
 
         self.step_size = 0.5
 
-        self.acc_max = 1.4
+        self.acc_max_CONST = 1.4
 
-        self.vel_max = 4.25
+        self.acc_max = self.acc_max_CONST
+        
+        self.vel_max_CONST = 4.25
+
+        self.vel_max = self.vel_max_CONST
 
         self.vel = 0
 
         self.acc = 0
+
+        self.parar = False
 
         self.state = {
             "verde":(0,255,0),
@@ -357,7 +392,7 @@ class semaforo: # ===================== El id del semaforo de guarda como 0 en J
         self.estado_actual = self.estados[self.ciclo][self.index]
 
 class Road:
-    def __init__(self, start, end,sem, ciclo, jsonId=0):
+    def __init__(self, start, end,sem, ciclo, jsonId):
         self.start = start
         
         self.end = end
@@ -367,6 +402,8 @@ class Road:
         self.vehicles = []
 
         self.ciclo = ciclo
+        
+        self.sem_id = jsonId
 
         self.init_properties()
 
@@ -383,6 +420,12 @@ class Road:
         
     def car_exit(self,car):
         self.vehicles.remove(car)
+        
+    def get_leader(self, position):
+        if position == 0:
+            return self.vehicles[0]
+        else:
+            return self.vehicles[position-1]
 
     def car_position(self,car):
         return (self.vehicles.index(car) + 1)
@@ -393,64 +436,92 @@ class Road:
 def main_simulation():
     sim = Simulation()
 
-    escala = 2.5
-    p0 = (0*escala,0*escala)
-    p1 = (45*escala,0*escala)
-    p2 = (90*escala,0*escala)
-    p3 = (0*escala,45*escala)
-    p4 = (45*escala,45*escala)
-    p5 = (90*escala,45*escala)
-    #p6 = (12*escala,90*escala)
-    p6 = (0*escala,90*escala)
-    p7 = (45*escala,90*escala)
-    p8 = (90*escala,90*escala)
-    pN = (45*escala,-30*escala)
-    pS = (45*escala,120*escala)
-    pE = (120*escala,45*escala)
-    pO = (-30*escala,45*escala)
-
-    # Add multiple roads
-    lista_caminos = [
-        (p0,p1),
-        (p0,p2),
-        (p0,p3),
-        (p4,p3),
-        (p2,p5),
-        (p6,p5),
-        (p6,p0),
-        (p4,p5),
-        (p3,p5),
-        (p1,p4),
-        (p1,p3),
-        (p2,p3),
-        (p6,p2),
-        (p6,p4),
-        (p4,p1),
-        (p0,p6),
-        (p7,p8),
-        (p8,p5),
-        (p6,p7),
-        (p4,p7),
-        (p5,p6),
-        (p5,p3),
-        (p5,p8),
-        #polares
-        (p0,pN),
-        (pN,p2),
-        (p2,pE),
-        (pE,p8),
-        (p8,pS),
-        (pS,p6),
-        (p6,pO),
-        (pO,p0)
+    escala = 2
+    puntos = [
+        (0*escala,0*escala),
+        (45*escala,0*escala),
+        (90*escala,0*escala),
+        (0*escala,45*escala),
+        (45*escala,45*escala),
+        (90*escala,45*escala),
+        (0*escala,90*escala),
+        (45*escala,90*escala),
+        (90*escala,90*escala),
+        (45*escala,-30*escala),
+        (45*escala,120*escala),
+        (120*escala,45*escala),
+        (-30*escala,45*escala),
     ]
 
-    sim.create_roads(lista_caminos)
+    calles = [
+        (puntos[0],puntos[1]),
+        (puntos[0],puntos[3]),
+        (puntos[0],puntos[4]),
+        (puntos[0],puntos[9]),
+        (puntos[0],puntos[12]),
+        (puntos[1],puntos[0]),
+        (puntos[1],puntos[2]),
+        (puntos[1],puntos[3]),
+        (puntos[1],puntos[4],(True), (0)),
+        (puntos[1],puntos[5]),
+        (puntos[1],puntos[9]),
+        (puntos[2],puntos[1]),
+        (puntos[2],puntos[4]),
+        (puntos[2],puntos[5]),
+        (puntos[2],puntos[9]),
+        (puntos[2],puntos[11]),
+        (puntos[3],puntos[0]),
+        (puntos[3],puntos[4],(True),(1)),
+        (puntos[3],puntos[6]),
+        (puntos[4],puntos[0]),
+        (puntos[4],puntos[1]),
+        (puntos[4],puntos[2]),
+        (puntos[4],puntos[3]),
+        (puntos[4],puntos[5]),
+        (puntos[4],puntos[6]),
+        (puntos[4],puntos[7]),
+        (puntos[4],puntos[8]),
+        (puntos[5],puntos[2]),
+        (puntos[5],puntos[4],(True),(0)),
+        (puntos[5],puntos[8]),
+        (puntos[6],puntos[3]),
+        (puntos[6],puntos[4]),
+        (puntos[6],puntos[7]),
+        (puntos[6],puntos[10]),
+        (puntos[6],puntos[12]),
+        (puntos[7],puntos[3]),
+        (puntos[7],puntos[4],(True),(1)),
+        (puntos[7],puntos[5]),
+        (puntos[7],puntos[6]),
+        (puntos[7],puntos[8]),
+        (puntos[7],puntos[10]),
+        (puntos[8],puntos[4]),
+        (puntos[8],puntos[5]),
+        (puntos[8],puntos[7]),
+        (puntos[8],puntos[11]),
+        (puntos[8],puntos[10]),
+        (puntos[9],puntos[0]),
+        (puntos[9],puntos[1]),
+        (puntos[9],puntos[2]),
+        (puntos[10],puntos[6]),
+        (puntos[10],puntos[7]),
+        (puntos[10],puntos[8]),
+        (puntos[11],puntos[2]),
+        (puntos[11],puntos[8]),
+        (puntos[12],puntos[0]),
+        (puntos[12],puntos[6]),
+    ]
+
+    sim.create_roads(calles)
 
     sim.create_cars(
         (
-            dijkstra_search(0, 7),
-            dijkstra_search(1, 0)
+            dijkstra_search(1,8,calles,puntos),
+            dijkstra_search(1,8,calles,puntos),
+            dijkstra_search(3,12,calles,puntos),
+            dijkstra_search(9,1,calles,puntos),
+            dijkstra_search(10,0,calles,puntos),
+            dijkstra_search(5,11,calles,puntos)
         )
     )
 
