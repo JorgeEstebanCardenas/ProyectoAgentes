@@ -260,7 +260,7 @@ class Window:
                 
                 agent = {
                     "Stepinfo": {
-                        "agentId": road.sem_id,
+                        "agentId": road.sem_id - 1,
                         "stepIndex": self.step,
                         "time":self.sim.t,
                         "state": road.semaforo.estado_actual,
@@ -268,7 +268,7 @@ class Window:
                         "positionY": pos[1],
                     }
                 }
-                print(agent)
+                #print(agent)
                 
                 self.sim.anim["steps"].append(agent)
 
@@ -356,6 +356,8 @@ class Window:
                 carro.pos = 0
                 carro.vel = carro.vel * 0.8
             
+            
+            
             agent = {
                 "Stepinfo": {
                     "agentId": carro.id,
@@ -366,7 +368,10 @@ class Window:
                     "positionY": y,
                 }
             }
-            print(agent)
+            
+            if(carro.parar and carro.id == 5):
+                #print(x, " ", y)
+                print(agent)
             self.sim.anim["steps"].append(agent)
 
 
@@ -722,17 +727,17 @@ sim.create_roads(calles)
 
 
 # ruta = crearRutas(9,8,calles,puntos)
-ruta2 = crearRutas(1,8,calles,puntos)
+# ruta2 = crearRutas(1,8,calles,puntos)
 
 
 sim.create_cars(
    (
        crearRutas(1,8,calles,puntos),
         crearRutas(1,8,calles,puntos),
-        #crearRutas(3,12,calles,puntos),
-        #crearRutas(9,1,calles,puntos),
-        #crearRutas(10,0,calles,puntos),
-        #crearRutas(5,11,calles,puntos)
+        crearRutas(3,12,calles,puntos),
+        crearRutas(9,1,calles,puntos),
+        crearRutas(10,0,calles,puntos),
+        crearRutas(5,11,calles,puntos)
    )
 )
 

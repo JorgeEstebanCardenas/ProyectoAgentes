@@ -119,7 +119,7 @@ class Window:
                         "positionY": pos[1],
                     }
                 }
-                print(agent)
+                #print(agent)
                 
                 self.sim.anim["steps"].append(agent)
 
@@ -203,6 +203,9 @@ class Window:
                 self.sim.roads[carro.path[carro.road]].car_enter(carro)
                 carro.pos = 0
                 carro.vel = carro.vel * 0.8
+            
+            if(carro.parar):
+                print(x, " ", y)
             
             agent = {
                 "Stepinfo": {

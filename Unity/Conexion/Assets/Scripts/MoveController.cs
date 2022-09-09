@@ -12,7 +12,8 @@ public class MoveController : MonoBehaviour
     {
         dt += Time.deltaTime;
         Step currentStep = steps[index];
-        if(currentStep.Stepinfo.time < dt)
+        Debug.Log((dt + " " + currentStep.Stepinfo.time));
+        if (currentStep.Stepinfo.time < dt)
         {
             index++;
             //Debug.Log(index);
