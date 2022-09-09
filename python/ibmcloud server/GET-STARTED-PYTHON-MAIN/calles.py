@@ -204,8 +204,13 @@ class Window:
                 carro.pos = 0
                 carro.vel = carro.vel * 0.8
             
+<<<<<<< HEAD
             #if(carro.parar):
             #    print(x, " ", y)
+=======
+            if(carro.parar):
+                print(x, " ", y)
+>>>>>>> c8c1c7c7fd5d697273837472a7328d8dad5d9f5c
             
             agent = {
                 "Stepinfo": {

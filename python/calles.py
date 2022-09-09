@@ -369,9 +369,15 @@ class Window:
                 }
             }
             
+<<<<<<< HEAD
             #if(carro.parar and carro.id == 5):
                 #print(x, " ", y)
                 #print(agent)
+=======
+            if(carro.parar and carro.id == 5):
+                #print(x, " ", y)
+                print(agent)
+>>>>>>> c8c1c7c7fd5d697273837472a7328d8dad5d9f5c
             self.sim.anim["steps"].append(agent)
 
 
