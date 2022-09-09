@@ -1,0 +1,14 @@
+Creamos el entorno virtual.
+python -m venv ./WebProject
+
+nos dirigimos a la nueva carpeta.
+cd WebProject
+
+Activamos el entorno virtual
+./Scripts/activate
+
+Creamos la carpeta www y nos dirijimos a él en la consola.
+cd www
+
+y arrancamos un servidor de archivos
+python -m http.server 8000
