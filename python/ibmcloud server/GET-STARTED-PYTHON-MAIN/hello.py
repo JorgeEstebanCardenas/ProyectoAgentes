@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, jsonify
 import atexit
 import os
 import json
-from search import dijkstra_search
+from search import crearRutas
 from calles import main_simulation
 
 app = Flask(__name__, static_url_path='')
@@ -62,7 +62,7 @@ def get_visitor():
 def get_matrix():
     A = request.args.get('A')
     B = request.args.get('B')
-    path = dijkstra_search(int(A), int(B))
+    path = crearRutas(int(A), int(B))
     return path
 
 # @app.route('/api/animation/staticProcess', methods=['GET'])
