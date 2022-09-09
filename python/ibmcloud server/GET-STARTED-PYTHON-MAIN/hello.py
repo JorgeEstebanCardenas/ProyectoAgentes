@@ -65,11 +65,11 @@ def get_matrix():
     path = dijkstra_search(int(A), int(B))
     return path
 
-@app.route('/api/animation/staticProcess', methods=['GET'])
-def process_animation():
-    anim_data = main_simulation()
+# @app.route('/api/animation/staticProcess', methods=['GET'])
+# def process_animation():
+#     anim_data = main_simulation()
     
-    return anim_data
+#     return anim_data
 
 @app.route('/api/animation/download', methods=['GET'])
 def get_animation():

@@ -363,7 +363,7 @@ class Window:
                     "agentId": carro.id,
                     "stepIndex": self.step,
                     "time":self.sim.t,
-                    "state": -1, #(0 if carro.vel == 0 else 1),
+                    "state": "none", #(0 if carro.vel == 0 else 1),
                     "positionX": x,
                     "positionY": y,
                 }
